@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글쓰기 - 게시판</title>
+    <link rel="stylesheet" href="board-style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✏️ 글쓰기</h1>
+        </div>
+
+        <form id="postForm">
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" id="title" placeholder="제목을 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea id="content" placeholder="내용을 입력하세요..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">사진 (선택)</label>
+                <input type="file" id="image" accept="image/*">
+                <div id="imagePreview" class="image-preview"></div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="cancelBtn" class="cancel-btn">취소</button>
+                <button type="submit" class="submit-btn">작성 완료</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="board-write.js"></script>
+</body>
+</html>

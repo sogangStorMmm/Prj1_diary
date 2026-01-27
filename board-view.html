@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 보기</title>
+    <link rel="stylesheet" href="board-style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="post-view" id="postView">
+            <!-- 게시글 내용이 여기에 표시됨 -->
+        </div>
+
+        <div class="comment-section">
+            <h3>💬 댓글</h3>
+            <div class="comment-write">
+                <textarea id="commentInput" placeholder="댓글을 입력하세요..."></textarea>
+                <button id="commentBtn" class="comment-btn">댓글 작성</button>
+            </div>
+            <div class="comment-list" id="commentList">
+                <!-- 댓글 목록이 여기에 표시됨 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 이미지 모달 -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script src="board-view.js"></script>
+</body>
+</html>

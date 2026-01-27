@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메뉴 선택 - 교환일기</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="menu.css">
+   
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>환영합니다!</h1>
+            <p class="subtitle" id="welcomeMsg">무엇을 해볼까요?</p>
+            <div class="user-info">
+                <span id="currentUserName"></span>
+                <button id="logoutBtn" class="logout-btn">로그아웃</button>
+            </div>
+        </div>
+
+        <div class="menu-container">
+            <div class="menu-card" onclick="location.href='index.html'">
+                <span class="menu-icon">📔</span>
+                <h3>교환 일기</h3>
+                <p>서로의 일기 공유</p>
+            </div>
+            
+            <div class="menu-card" onclick="location.href='board.html'">
+                <span class="menu-icon">💬</span>
+                <h3>자유 게시판</h3>
+                <p>의견 나누고 대화하기</p>
+            </div>
+        </div>
+    </div>
+
+   <script src ="menu.js" > </script>
+</body>
+</html>

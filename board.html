@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <link rel="stylesheet" href="board-style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 게시판</h1>
+            <div class="user-info">
+                <span id="currentUserName"></span>
+                <button id="logoutBtn" class="logout-btn">로그아웃</button>
+            </div>
+        </div>
+
+        <div class="board-nav">
+            <button id="writeBtn" class="write-btn">✏️ 글쓰기</button>
+        </div>
+
+        <div class="post-list" id="postList">
+            <div class="empty-state">아직 작성된 게시글이 없습니다.</div>
+        </div>
+    </div>
+
+    <script src="board.js"></script>
+</body>
+</html>
