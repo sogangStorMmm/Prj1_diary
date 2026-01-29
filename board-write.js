@@ -13,6 +13,8 @@ const editPostId = urlParams.get('edit');
 let isEditMode = false;
 let editingPost = null;
 
+
+
 // 수정 모드면 기존 데이터 불러오기
 if (editPostId) {
     isEditMode = true;

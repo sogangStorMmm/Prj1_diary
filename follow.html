@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>팔로우 관리 - 교환일기</title>
+    <link rel="stylesheet" href="login-style.css">
+    <style>
+        .follow-section {
+            margin-bottom: 30px;
+        }
+        
+        .follow-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .user-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .user-search input {
+            flex: 1;
+        }
+        
+        .user-search button {
+            width: auto;
+            padding: 12px 24px;
+        }
+        
+        .user-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .user-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .user-id {
+            color: #888;
+            font-size: 13px;
+        }
+        
+        .follow-btn, .unfollow-btn {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .unfollow-btn {
+            background: #ff4444;
+        }
+        
+        .unfollow-btn:hover {
+            background: #cc0000;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-mutual {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .status-following {
+            background: #667eea;
+            color: white;
+        }
+        
+        .status-follower {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👥 팔로우 관리</h1>
+        <p class="subtitle">서로 팔로우하면 교환일기를 볼 수 있어요</p>
+
+        <!-- 사용자 검색 -->
+        <div class="follow-section">
+            <h3>🔍 사용자 찾기</h3>
+            <div class="user-search">
+                <input type="text" id="searchInput" placeholder="아이디로 검색">
+                <button onclick="searchUser()">검색</button>
+            </div>
+            <div id="searchResult"></div>
+        </div>
+
+        <!-- 팔로잉 목록 -->
+        <div class="follow-section">
+            <h3>💙 내가 팔로우하는 사람</h3>
+            <div class="user-list" id="followingList">
+                <div class="empty-state">팔로우한 사람이 없습니다</div>
+            </div>
+        </div>
+
+        <!-- 팔로워 목록 -->
+        <div class="follow-section">
+            <h3>💚 나를 팔로우하는 사람</h3>
+            <div class="user-list" id="followerList">
+                <div class="empty-state">팔로워가 없습니다</div>
+            </div>
+        </div>
+
+        <!-- 상호 팔로우 목록 -->
+        <div class="follow-section">
+            <h3>💕 교환일기 파트너 (상호 팔로우)</h3>
+            <div class="user-list" id="mutualList">
+                <div class="empty-state">아직 교환일기 파트너가 없습니다</div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="menu.html">← 메뉴로 돌아가기</a>
+        </div>
+    </div>
+
+    <script src="follow.js"></script>
+</body>
+</html>

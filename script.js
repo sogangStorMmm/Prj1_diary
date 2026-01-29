@@ -1,3 +1,4 @@
+
 // 로그인 확인
 const currentUser = sessionStorage.getItem('currentUser');
 const displayName = sessionStorage.getItem('displayName');
@@ -12,6 +13,18 @@ if (!currentUser) {
 // 현재 사용자 이름 표시
 document.getElementById('currentUserName').textContent = `${displayName}님으로 로그인 중`;
 
+
+
+//앞뒤로 가기 감지
+window.addEventListener('pageshow', function(event) {
+    // 캐시에서 복원된 경우
+    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        checkLogin();
+    }
+});
+
+
+
 // 로그아웃 버튼
 document.getElementById('logoutBtn').addEventListener('click', function() {
     sessionStorage.clear();
@@ -23,25 +36,22 @@ document.getElementById('logoutBtn').addEventListener('click', function() {
 const today = new Date().toISOString().split('T')[0];
 document.getElementById('date').value = today;
 
-// 이미지 미리보기
+// 이미지 처리 (미리보기 없음)
 let selectedImage = null;
 
 document.getElementById('image').addEventListener('change', function(e) {
     const file = e.target.files[0];
-    const preview = document.getElementById('imagePreview');
     
     if (file) {
         const reader = new FileReader();
         
         reader.onload = function(event) {
             selectedImage = event.target.result;
-            preview.innerHTML = `<img src="${selectedImage}" alt="미리보기">`;
         };
         
         reader.readAsDataURL(file);
     } else {
         selectedImage = null;
-        preview.innerHTML = '';
     }
 });
 
@@ -81,38 +91,129 @@ document.getElementById('diaryForm').addEventListener('submit', function(e) {
     document.getElementById('content').value = '';
     document.getElementById('date').value = today;
     document.getElementById('image').value = '';
-    document.getElementById('imagePreview').innerHTML = '';
     selectedImage = null;
 
     alert('일기가 저장되었습니다! 📝\n상대방만 읽을 수 있어요.');
 });
 
-// 일기 목록 표시 함수 (상대방이 쓴 일기만 보임)
+// 페이지네이션 변수
+let currentPage = 1;
+const itemsPerPage = 10;
+
+// 상호 팔로우 확인 함수
+function getMutualFollows() {
+    const followData = JSON.parse(localStorage.getItem('followData')) || {};
+    
+    if (!followData[currentUser]) {
+        return [];
+    }
+    
+    const myFollowing = followData[currentUser].following || [];
+    const myFollowers = followData[currentUser].followers || [];
+    
+    // 내가 팔로우하고 나도 팔로우한 사람들 (상호 팔로우)
+    const mutualFollows = myFollowing.filter(user => myFollowers.includes(user));
+    
+    return mutualFollows;
+}
+
+// 일기 목록 표시 함수 (상호 팔로우한 사람들의 일기만 보임)
 function displayDiaries() {
     const container = document.getElementById('diaryEntries');
     
-    // 상대방이 쓴 일기만 필터링
-    const otherDiaries = diaries.filter(diary => diary.author !== currentUser);
+    // 상호 팔로우한 사람들 가져오기
+    const mutualFollows = getMutualFollows();
+    
+    if (mutualFollows.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>교환일기 파트너가 없습니다.</p>
+                <p style="margin-top: 10px; font-size: 14px;">
+                    <a href="follow.html" style="color: #667eea; text-decoration: underline;">팔로우 관리</a>에서 파트너를 찾아보세요!
+                </p>
+            </div>
+        `;
+        return;
+    }
+    
+    // 상호 팔로우한 사람들의 일기만 필터링
+    const mutualDiaries = diaries.filter(diary => mutualFollows.includes(diary.author));
 
-    if (otherDiaries.length === 0) {
-        container.innerHTML = '<div class="empty-state">아직 상대방이 작성한 일기가 없습니다.</div>';
+    if (mutualDiaries.length === 0) {
+        container.innerHTML = '<div class="empty-state">아직 파트너가 작성한 일기가 없습니다.</div>';
         return;
     }
 
-    container.innerHTML = otherDiaries.map(diary => `
-        <div class="diary-item">
+    // 페이지네이션 계산
+    const totalPages = Math.ceil(mutualDiaries.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentDiaries = mutualDiaries.slice(startIndex, endIndex);
+
+    // 일기 목록 (제목만 표시)
+    container.innerHTML = currentDiaries.map(diary => `
+        <div class="diary-item-preview" onclick="viewDiary(${diary.id})">
             <div class="diary-header">
                 <span class="diary-title">${diary.title}</span>
                 <span class="diary-meta">${diary.authorName} · ${diary.date}</span>
             </div>
-            <div class="diary-content">${diary.content}</div>
-            ${diary.image ? `<div class="diary-image"><img src="${diary.image}" alt="일기 사진" class="diary-thumbnail" onclick="openModal('${diary.image}')"></div>` : ''}
         </div>
     `).join('');
+
+    // 페이지네이션 버튼
+    if (totalPages > 1) {
+        container.innerHTML += `
+            <div class="pagination">
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="page-btn">이전</button>
+                <span class="page-info">페이지 ${currentPage} / ${totalPages}</span>
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="page-btn">다음</button>
+            </div>
+        `;
+    }
+}
+
+// 페이지 변경
+function changePage(page) {
+    const mutualFollows = getMutualFollows();
+    const mutualDiaries = diaries.filter(diary => mutualFollows.includes(diary.author));
+    const totalPages = Math.ceil(mutualDiaries.length / itemsPerPage);
+    
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    displayDiaries();
+}
+
+// 일기 상세보기
+function viewDiary(diaryId) {
+    const diary = diaries.find(d => d.id === diaryId);
+    if (!diary) return;
+
+    const modal = document.getElementById('diaryModal');
+    const modalContent = document.getElementById('diaryModalContent');
+    
+    modalContent.innerHTML = `
+        <div class="diary-detail">
+            <div class="diary-detail-header">
+                <h2>${diary.title}</h2>
+                <span class="diary-detail-meta">${diary.authorName} · ${diary.date}</span>
+            </div>
+            <div class="diary-detail-content">${diary.content}</div>
+            ${diary.image ? `<div class="diary-detail-image"><img src="${diary.image}" alt="일기 사진" onclick="openImageModal('${diary.image}')"></div>` : ''}
+        </div>
+    `;
+    
+    modal.classList.add('active');
+}
+
+// 일기 모달 닫기
+function closeDiaryModal() {
+    const modal = document.getElementById('diaryModal');
+    modal.classList.remove('active');
 }
 
 // 이미지 모달 열기/닫기
-function openModal(imageSrc) {
+function openImageModal(imageSrc) {
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImage');
     
@@ -120,17 +221,36 @@ function openModal(imageSrc) {
     modalImg.src = imageSrc;
 }
 
-function closeModal() {
+function closeImageModal() {
     const modal = document.getElementById('imageModal');
     modal.classList.remove('active');
 }
 
 // 모달 닫기 이벤트
-document.querySelector('.modal-close').addEventListener('click', closeModal);
-document.getElementById('imageModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeModal();
+document.addEventListener('DOMContentLoaded', function() {
+    // 이미지 모달 닫기
+    const imageModalClose = document.querySelector('#imageModal .modal-close');
+    if (imageModalClose) {
+        imageModalClose.addEventListener('click', closeImageModal);
     }
+    
+    document.getElementById('imageModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeImageModal();
+        }
+    });
+    
+    // 일기 모달 닫기
+    const diaryModalClose = document.querySelector('#diaryModal .modal-close');
+    if (diaryModalClose) {
+        diaryModalClose.addEventListener('click', closeDiaryModal);
+    }
+    
+    document.getElementById('diaryModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDiaryModal();
+        }
+    });
 });
 
 // 페이지 로드 시 일기 목록 표시

@@ -1,3 +1,13 @@
+// 페이지가 표시될 때마다 실행 (뒤로가기/앞으로가기 포함)
+window.addEventListener('pageshow', function(event) {
+    const currentUser = sessionStorage.getItem('currentUser');  
+    // 세션 정보가 없는데 페이지에 접근한 경우
+    if (!currentUser) {
+        alert('비정상적인 접근입니다. 다시 로그인해주세요.');
+        // replace를 써야 '앞으로 가기' 기록을 덮어써서 다시 못 돌아옵니다.
+        window.location.replace('login.html');
+    }
+});
 // 로그인 확인
 const currentUser = sessionStorage.getItem('currentUser');
 const displayName = sessionStorage.getItem('displayName');
@@ -9,6 +19,12 @@ if (!currentUser) {
 
 // 현재 사용자 표시
 document.getElementById('currentUserName').textContent = `${displayName}님`;
+// ⭐ 뒤로가기/앞으로가기 감지
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        checkLogin();
+    }
+});
 
 // 로그아웃
 document.getElementById('logoutBtn').addEventListener('click', function() {

@@ -1,3 +1,4 @@
+sessionStorage.clear();
 // 아이디 중복 체크
 document.getElementById('username').addEventListener('blur', function() {
     const username = this.value.trim();

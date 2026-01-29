@@ -11,6 +11,9 @@ if (!currentUser) {
 const urlParams = new URLSearchParams(window.location.search);
 const postId = parseInt(urlParams.get('id'));
 
+
+
+
 // 게시글 불러오기
 const posts = JSON.parse(localStorage.getItem('posts')) || [];
 const post = posts.find(p => p.id === postId);
