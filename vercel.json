@@ -1,9 +1,9 @@
 {
     "version": 2,
-    "rewrites": [
+    "routes": [
         {
-            "source": "/api/:path*",
-            "destination": "/exchange-diary-backend/server.js"
+            "src": "/api/(.*)",
+            "dest": "/api/index.js"
         }
     ]
 }
