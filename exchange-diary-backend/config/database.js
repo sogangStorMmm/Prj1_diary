@@ -9,7 +9,15 @@ const connectDB = async () => {
   }
 
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('--- DB 연결 진단 ---');
+    console.log('MONGODB_URI 존재 여부:', !!process.env.MONGODB_URI);
+    if (process.env.MONGODB_URI) {
+      console.log('MONGODB_URI 시작 부분:', process.env.MONGODB_URI.substring(0, 25));
+    }
+
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+    });
     console.log('✅ MongoDB 연결 성공!');
   } catch (error) {
     console.error('❌ MongoDB 연결 실패:', error.message);
