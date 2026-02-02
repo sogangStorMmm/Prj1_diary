@@ -1,7 +1,7 @@
 // api-base.js
 // 백엔드 API와의 통신을 담당하는 파일 (프론트엔드용)
 
-const API_BASE_URL = 'https://prj1diary.vercel.app/api';
+const API_BASE_URL = '/api';
 
 const api = {
     // 공통 요청 함수

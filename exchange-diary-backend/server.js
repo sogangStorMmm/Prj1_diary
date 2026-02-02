@@ -18,10 +18,23 @@ app.use(express.json({ limit: '10mb' })); // JSON 파싱 (이미지 base64 위�
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // 라우트 연결
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/follow', require('./routes/follow'));
-app.use('/api/diary', require('./routes/diary'));
-app.use('/api/post', require('./routes/post'));
+const authRoutes = require('./routes/auth');
+const followRoutes = require('./routes/follow');
+const diaryRoutes = require('./routes/diary');
+const postRoutes = require('./routes/post');
+
+// /api 경로와 일반 경로 모두 대응 가능하도록 설정
+app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
+app.use('/api/follow', followRoutes);
+app.use('/follow', followRoutes);
+
+app.use('/api/diary', diaryRoutes);
+app.use('/diary', diaryRoutes);
+
+app.use('/api/post', postRoutes);
+app.use('/post', postRoutes);
 
 // 기본 라우트
 app.get('/', (req, res) => {
