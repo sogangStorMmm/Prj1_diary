@@ -9,8 +9,8 @@ const connectDB = require('./config/database');
 // Express 앱 생성
 const app = express();
 
-// 데이터베이스 연결
-connectDB();
+// 데이터베이스 연결 (비동기로 시작하지만 mongoose가 내부적으로 버퍼링함)
+connectDB().catch(err => console.error('Initial DB connection error:', err));
 
 // 미들웨어
 app.use(cors()); // CORS 허용 (프론트엔드 연결)

@@ -4,17 +4,18 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+
   try {
-    // MongoDB Atlas에 연결
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ MongoDB 연결 성공!');
   } catch (error) {
     console.error('❌ MongoDB 연결 실패:', error.message);
-    process.exit(1); // 연결 실패시 서버 종료
+    // 서버리스 환경에서는 process.exit(1)을 하지 않고 에러를 던져서 
+    // Vercel이 에러 로그를 남기게 합니다.
+    throw error;
   }
 };
 
