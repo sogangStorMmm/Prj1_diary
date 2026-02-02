@@ -9,8 +9,20 @@ const connectDB = require('./config/database');
 // Express 앱 생성
 const app = express();
 
-// 데이터베이스 연결 (비동기로 시작하지만 mongoose가 내부적으로 버퍼링함)
-connectDB().catch(err => console.error('Initial DB connection error:', err));
+// DB 연결 보장을 위한 미들웨어 (Vercel/Serverless 환경 대응)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('DB 연결 미들웨어 에러:', error);
+    res.status(500).json({
+      message: '데이터베이스 연결에 실패했습니다',
+      error: error.message
+    });
+  }
+});
+
 
 // 미들웨어
 app.use(cors()); // CORS 허용 (프론트엔드 연결)
